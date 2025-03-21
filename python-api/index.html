@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Prediction</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    html, body{
+        height: 100%;
+    }
+    body{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        box-shadow: 0px 0px 10px gray;
+        border-radius: 10px;
+        background: radial-gradient(white, lightgray);
+        font-size: 18px;
+    }
+    .container > input{
+        margin: 5px;
+        outline: none;
+        font-size: 18px;
+    }
+    .profile-box{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+    }
+    #predict-btn{
+        padding: 10px;
+        min-width: 150px;
+        border: none;
+        cursor: pointer;
+        background-color: royalblue;
+        color: white;
+    }
+</style>
+<body>
+    <div class="container">
+        <strong>Profile Prediction</strong>
+        <label>Age</label>
+        <input type="number" name="age" id="age">
+        <label>Balance</label>
+        <input type="number" name="balance" id="balance">
+        <label>Estimated Salary</label>
+        <input type="number" name="estimatedsalary" id="estimatedsalary">
+        <div class="profile-box">
+            <span>Profile</span>
+            <span id="profile"></span>
+        </div>
+        <input type="button" value="Predict" id="predict-btn">
+    </div>
+</body>
+<script>
+    $('#predict-btn').on('click', ()=>{
+        $.ajax({
+            url:'http://127.0.0.1:5000/predict',
+            method: 'POST',
+            contentType:'application/json',
+            data: JSON.stringify({
+                age: $('#age').val(),
+                balance: $('#balance').val(),
+                estimated_salary: $('#estimatedsalary').val(),
+            }),
+            success: (data)=>{
+                let predictedClass = data.class
+                let color = predictedClass == 'Credito' ? 'green' : predictedClass == 'Alto' ? 'blue' : 'orangered'
+                $('#profile').html(data.class)
+                $('#profile').css('color', color)
+            }
+        })
+    })
+</script>
+</html>
